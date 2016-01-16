@@ -3,11 +3,11 @@
 var test = require('tape');
 var setTimeout = require('timers').setTimeout;
 
-var OrderedFanoutRequest = require('../ordered.js');
-var UnorderedFanoutRequest = require('../unordered.js');
+var OrderedFanoutTask = require('../ordered.js');
+var UnorderedFanoutTask = require('../unordered.js');
 
 test('fanout timers in order', function t(assert) {
-    var req = OrderedFanoutRequest.alloc(
+    var task = OrderedFanoutTask.alloc(
         null,
         function doTimer(_, value, i, callback) {
             setTimeout(onTimer, value);
@@ -29,16 +29,16 @@ test('fanout timers in order', function t(assert) {
                 }
             ]);
 
-            OrderedFanoutRequest.release(req);
+            OrderedFanoutTask.release(task);
             assert.end();
         }
     );
 
-    req.run([50, 100, 200], null);
+    task.run([50, 100, 200], null);
 });
 
 test('fanout timers in unorder', function t(assert) {
-    var req = UnorderedFanoutRequest.alloc(
+    var task = UnorderedFanoutTask.alloc(
         null,
         function doTimer(_, value, i, callback) {
             setTimeout(onTimer, value);
@@ -60,10 +60,10 @@ test('fanout timers in unorder', function t(assert) {
                 }
             ]);
 
-            UnorderedFanoutRequest.release(req);
+            UnorderedFanoutTask.release(task);
             assert.end();
         }
     );
 
-    req.run([50, 100, 200], null);
+    task.run([50, 100, 200], null);
 });
