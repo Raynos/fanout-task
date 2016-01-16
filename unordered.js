@@ -1,6 +1,6 @@
 'use strict';
 
-function UnorderedFanoutRequest() {
+function UnorderedFanoutTask() {
     this.self = null;
     this.onItem = null;
     this.onComplete = null;
@@ -14,7 +14,7 @@ function UnorderedFanoutRequest() {
     this.allocClosure();
 }
 
-UnorderedFanoutRequest.prototype.allocClosure =
+UnorderedFanoutTask.prototype.allocClosure =
 function allocClosure() {
     var self = this;
 
@@ -25,7 +25,7 @@ function allocClosure() {
     }
 };
 
-UnorderedFanoutRequest.prototype.run =
+UnorderedFanoutTask.prototype.run =
 function run(records, cb) {
     this.counter = records.length;
     this.index = 0;
@@ -37,7 +37,7 @@ function run(records, cb) {
     }
 };
 
-UnorderedFanoutRequest.prototype.insertResult =
+UnorderedFanoutTask.prototype.insertResult =
 function insertResult(err, value) {
     this.results[this.index++] = new Result(err, value);
 
@@ -47,35 +47,35 @@ function insertResult(err, value) {
     }
 };
 
-UnorderedFanoutRequest.freeList = [];
+UnorderedFanoutTask.freeList = [];
 for (var i = 0; i < 1000; i++) {
-    UnorderedFanoutRequest.freeList.push(new UnorderedFanoutRequest());
+    UnorderedFanoutTask.freeList.push(new UnorderedFanoutTask());
 }
 
-UnorderedFanoutRequest.alloc = function alloc(ctx, onItem, onComplete) {
-    var req;
+UnorderedFanoutTask.alloc = function alloc(ctx, onItem, onComplete) {
+    var task;
 
-    if (UnorderedFanoutRequest.freeList.length === 0) {
-        req = new UnorderedFanoutRequest();
+    if (UnorderedFanoutTask.freeList.length === 0) {
+        task = new UnorderedFanoutTask();
     } else {
-        req = UnorderedFanoutRequest.freeList.pop();
+        task = UnorderedFanoutTask.freeList.pop();
     }
 
-    req.self = ctx;
-    req.onItem = onItem;
-    req.onComplete = onComplete;
-    req.results = [];
+    task.self = ctx;
+    task.onItem = onItem;
+    task.onComplete = onComplete;
+    task.results = [];
 
-    return req;
+    return task;
 };
 
-UnorderedFanoutRequest.release = function release(req) {
-    req.results = null;
+UnorderedFanoutTask.release = function release(task) {
+    task.results = null;
 
-    UnorderedFanoutRequest.freeList.push(req);
+    UnorderedFanoutTask.freeList.push(task);
 };
 
-module.exports = UnorderedFanoutRequest;
+module.exports = UnorderedFanoutTask;
 
 function Result(err, value) {
     this.err = err;
