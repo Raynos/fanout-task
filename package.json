@@ -11,24 +11,33 @@
     "url": "https://github.com/Raynos/fanout-task/issues",
     "email": "raynos2@gmail.com"
   },
-  "contributors": [{
-    "name": "Raynos"
-  }],
-  "dependencies": {
-  },
+  "contributors": [
+    {
+      "name": "Raynos"
+    }
+  ],
+  "dependencies": {},
   "devDependencies": {
+    "async": "1.5.2",
+    "async_bench": "0.5.1",
+    "collect-parallel": "1.0.1",
     "eslint": "1.8.0",
     "eslint-config-perf-standard": "2.1.0",
     "eslint-plugin-perf-standard": "1.0.2",
+    "fastparallel": "2.2.1",
     "fixtures-fs": "2.0.0",
+    "minimist": "1.2.0",
     "nyc": "3.0.1",
     "opn": "^1.0.1",
+    "run-parallel": "1.1.4",
     "tape": "^4.0.1"
   },
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://github.com/Raynos/fanout-task/raw/master/LICENSE"
-  }],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/Raynos/fanout-task/raw/master/LICENSE"
+    }
+  ],
   "scripts": {
     "test": "npm run lint -s && npm run cover -s",
     "lint": "eslint $(git ls-files | grep '.js$') && echo '# linter passed'",
