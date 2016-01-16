@@ -13,24 +13,37 @@ Efficient zero-alloc parallel fanout
 ## Example
 
 ```js
-var fanoutTask = require("fanout-task");
+var FanoutTask = require('fanout-task/ordered');
 
-// TODO. Show example
+function Logger() {
+}
+
+Logger.prototype.log = function log(record, cb) {
+    console.log(record);
+    cb(null);
+};
+
+Logger.prototype.logMany = function logMany(records, cb) {
+    var task = FanoutTask.alloc(this, logEachRecord, onLogsDone);
+    task.run(records, cb);
+}
+
+function logEachRecord(task, record, _, cb) {
+    task.self.log(record, cb);
+}
+
+function onLogsDone(task, results, cb) {
+    FanoutTask.release(task);
+
+    for (var i = 0; i < results; i++) {
+        if (results[i].err) {
+            return cb(results[i].err);
+        }
+    }
+
+    cb(null);
+}
 ```
-
-## Docs
-
-### `var someValue = fanoutTask(/*arguments*/)`
-
-<!--
-  This is a jsig notation of your interface.
-  https://github.com/Raynos/jsig
--->
-```ocaml
-fanout-task := (arg: Any) => void
-```
-
-// TODO. State what the module does.
 
 ## Installation
 
